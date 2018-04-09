@@ -1,34 +1,8 @@
 <?php
-$files = [];
-if (isset($_POST['submit'])){
-    if (count($_FILES['fichier']['name']) > 0) {
-        for($i=0;$i<count($_FILES ['fichier']['name']); $i++) {
-            $tmpFilePath = $_FILES['fichier']['tmp_name']['$i'];
-
-            if($tmpFilePath != ""){
-                //save the filename
-                $shortname = $_FILES['upload']['name'][$i];
-
-                //save the url and the file
-                $filePath = "/upload/" . date('d-m-Y-H-i-s').'-'.$_FILES['upload']['name'][$i];
-
-                //Upload the file into the temp dir
-                if(move_uploaded_file($tmpFilePath, $filePath)) {
-
-                    $files[] = $shortname;
-                    var_dump($files);
-                }else{
-                    echo 'upload failed !';
-                }
-            }
-        }
-    }
-}
-var_dump($_POST, $_FILES);
+require '../UploadController.php';
 
 
 ?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,14 +16,15 @@ var_dump($_POST, $_FILES);
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 </head>
 <body>
-<div class="container">
-    <form class="form-controls" action="" method="post" enctype="multipart/form-data">
-        <div class="custom-file">
-            <label class="custom-file-label" for="upload_file">Choississez un ou plusieurs fichiers !</label>
-            <input class="custom-file-input" type="file" name="fichier[]" multiple="multiple" id="upload_file"/>
-            <input class="btn btn-primary" type="submit" value="Upload" />
-        </div>
-    </form>
+
+<form class="form-controls" action="" method="post" enctype="multipart/form-data">
+
+        <label class="custom-file-label" for="upload_file">Choississez un ou plusieurs fichiers !</label>
+        <input class="custom-file-input" type="file" name="fichier[]" multiple="multiple" id="upload_file"/>
+        <input class="btn btn-primary" type="submit" name="submit" value="Upload" />
+
+</form>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -58,3 +33,23 @@ var_dump($_POST, $_FILES);
         integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 </body>
 </html>
+<?php
+
+if (isset($_POST['submit'])){
+    $numberFiles = count($_FILES['fichier']['name']);
+    if($numberFiles > 0) {
+        for($i=0; $i<$numberFiles; $i++) {
+            //Save the name
+            $nameFile = $_FILES['upload']['name'][$i];
+            $checkFile = new UploadController($nameFile);
+
+
+        }
+    }
+    $verif = new UploadVerification($_FILES['fichier']['name'][0]);
+    var_dump($verif->uniqueFileName());
+
+
+
+
+}
