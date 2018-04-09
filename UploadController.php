@@ -7,16 +7,23 @@
  */
 
 class UploadController {
-    private $extensionAllowed = ['jpg', 'jpeg', 'png', 'gif'];
-    public $extension;
-    private $file;
+    private $extensionAllowed = [
+        'jpg' => 'image/jpg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+    ];
+    private $extension;
+    private $fileName;
+    private $tmpFilesPath;
 
 
 
-    public function __construct($file)
+
+    public function __construct($fileName)
     {
-        $this->file = $file;
-        $this->extension = $this->setExtension($file);
+        $this->fileName = $fileName;
+        $this->extension = $this->setExtension($fileName);
 
     }
 
@@ -25,9 +32,9 @@ class UploadController {
         $uniqueFileName = 'image' . uniqid() . '.' . self::getExtension();
         return $uniqueFileName;
     }
-    public function setExtension($file)
+    public function setExtension($fileName)
     {
-        $extension = pathinfo($file, PATHINFO_EXTENSION);
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
         return $extension;
 
     }
@@ -44,9 +51,17 @@ class UploadController {
 
     public function checkExtension()
     {
-        if (!in_array($this->getExtension(), $this->extensionAllowed )) {
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+        $mimeType = finfo_file($finfo, $this->fileName);
+
+        self::dd(in_array($mimeType, $this->extensionAllowed));
+
+        if (!in_array($mimeType, $this->extensionAllowed) && array_key_exists($this->getExtension(), $this->extensionAllowed)) {
             echo "Le fichier n'est pas une image";
         }
+        finfo_close($finfo);
         return true;
     }
 
@@ -58,11 +73,9 @@ class UploadController {
         return $this->file;
     }
 
-    /**
-     * @param mixed $file
-     */
-
-
-
+    //FunctionCustom.php
+    static function dd($value){
+        die( var_dump( $value ) );
+    }
 
 }

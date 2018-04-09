@@ -34,9 +34,13 @@ require '../UploadController.php';
 </body>
 </html>
 <?php
-
+/*
+ * To do renovyer le chemin du fichier temp a la classe Upload controller
+ */
 if (isset($_POST['submit'])){
     $numberFiles = count($_FILES['fichier']['name']);
+    $verif = new UploadController($_FILES['fichier']['name'][0]);
+    var_dump($verif->checkExtension());
     if($numberFiles > 0) {
         for($i=0; $i<$numberFiles; $i++) {
             //Save the name
@@ -46,8 +50,7 @@ if (isset($_POST['submit'])){
 
         }
     }
-    $verif = new UploadVerification($_FILES['fichier']['name'][0]);
-    var_dump($verif->uniqueFileName());
+
 
 
 
