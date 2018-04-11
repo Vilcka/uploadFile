@@ -24,24 +24,43 @@ require '../UploadController.php';
         </form>
 
 
-<?php if (isset($_POST['submit'])): ?>
-    <?php if (empty($_FILES['name'])):?>
-        <p class="text-danger   ">Aucun fichier envoyé</p>
+<?php
+function dd($var)
+{
+    echo '<pre>';
+    var_dump($var);
+    echo '</pre>';
+}
+?>
+
+<?php
+// Si l'upload est lancé ..
+if (isset($_POST['submit'])) {
+    //.. et si des fichier sont bien présent
+    if (!empty($_FILES['upload']['name'])) {
+        //init des variables
+        $uploadDir = '';
+        $uploaded = [];
+        $filesName = $_FILES['upload']['name'];
+        $filesType = $_FILES['upload']['type'];
+        $filesSize = $_FILES['upload']['size'];
+        $filesTmp = $_FILES['upload']['tmp_name'];
+        $filesErrors = $_FILES['upload']['error'];
+        $numberFiles = count($_FILES['upload']['name']);
+
+    }else {
+        echo "<p class=\"text-danger\">Aucun fichier envoyé</p>";
+    }
+}
+?>
+
+    <?php
+    dd($filesName);
+    dd($filesType);
+    dd($numberFiles);
+    ?>
 
 
-<!--//    $numberFiles = count($_FILES['upload']['name']);-->
-<!--//    $verif = new UploadController($_FILES['upload']['name'][0]);-->
-<!--//-->
-<!--//    if($numberFiles > 0) {-->
-<!--//        for($i=0; $i<$numberFiles; $i++) {-->
-<!--//            //Save the name-->
-<!--//            $nameFile = $_FILES['upload']['name'][$i];-->
-<!--//            $checkFile = new UploadController($nameFile);-->
-<!--//-->
-<!--//-->
-<!--//        }-->
-    <?php endif; ?>
-<?php endif; ?>
     </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>

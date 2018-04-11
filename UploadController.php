@@ -13,25 +13,35 @@ class UploadController {
         'png' => 'image/png',
         'gif' => 'image/gif',
     ];
+    private $extension;
+    //tailel du fichier en octet, 1 Mo = 1048576 octets
+    private $sizeLimit = 5242880;
 
+
+    public function checkSize($size)
+    {
+        if($size > $this->sizeLimit) {
+            return false;
+        }
+    }
 
     public function uniqueFileName()
     {
-        $uniqueFileName = 'image' . uniqid() . '.' . self::getExtension();
+
+        $uniqueFileName = 'image' . uniqid() . '.' . $this->extension;
         return $uniqueFileName;
     }
 
-    public function setExtension($fileName)
+    public function extension(array $fileName)
     {
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        return $extension;
+        $this->extension = $extension;
+        return $this->extension;
 
     }
 
-    public function checkExtension($fileName)
+    public function checkExtension($fileType)
     {
-
-        self::dd(in_array($mimeType, $this->extensionAllowed));
 
         if (!in_array($mimeType, $this->extensionAllowed) && array_key_exists($this->getExtension(), $this->extensionAllowed)) {
             echo "Le fichier n'est pas une image";
