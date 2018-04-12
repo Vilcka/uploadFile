@@ -34,17 +34,18 @@ class UploadController {
         return $uniqueFileName;
     }
 
-    public function getExtension(array $filesName)
+    public function getExtension(string $fileName)
     {
-        foreach ($filesName as $fileName) {
-            $this->extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        }
+
+        $this->extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
         return $this->extension;
     }
 
-    public function checkExtension(string $fileType, array $fileName)
+    public function checkExtension(string $fileType, string $fileName)
     {
-        if (!array_key_exists($this->getExtension($fileName), $this->extensionAllowed) && !in_array($fileType, $this->extensionAllowed)) {
+        if (!array_key_exists($this->getExtension($fileName), $this->extensionAllowed) &&
+            !in_array($fileType, $this->extensionAllowed)) {
             return false;
         }
         return true;

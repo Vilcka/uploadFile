@@ -48,20 +48,20 @@ if (isset($_POST['submit'])) {
         $filesErrors = $_FILES['upload']['error'];
         $numberFiles = count($_FILES['upload']['name']);
 
-        // Si chaque fichier est une image on l'upload dans le dossier
         for($i=0;$i<$numberFiles; $i ++) {
             //Si il ny'a pas d'erreur, que le fichier a la bonne extension et est de la bonne taille
-            if($filesErrors[$i] === 0 && $uploadController->checkExtension($filesType[$i], $filesName) &&
-                $uploadController->checkSize($filesSize[$i])) {
+            if($filesErrors[$i] !== 0) {
+                echo "<p class=\"text-danger\">Erreur lors de l'upload !</p>";
+            }
+            if(!$uploadController->checkExtension($filesType[$i], $filesName[$i])) {
+                echo "<p class=\"text-danger\">Le fichier $filesName[$i] n'est pas une image !</p>";
+            }elseif(!$uploadController->checkSize($filesSize[$i])) {
+                echo "<p class=\"text-danger\">Le fichier $filesName[$i] est trop volumineux !</p>";
+            }else {
                 $uploadFileName = '../Upload/'. $uploadController->uniqueFileName();
                 move_uploaded_file($filesTmp[$i],$uploadFileName);
-            }else {
-                echo "Verifiez la taille et le type de fichier";
             }
         }
-
-    }else {
-        echo "<p class=\"text-danger\">Aucun fichier envoyé</p>";
     }
 }
 ?>
