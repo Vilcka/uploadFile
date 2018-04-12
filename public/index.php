@@ -60,32 +60,38 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+
 //margin 66+16
 ?>
-<?php $uploadedFiles = new FilesystemIterator('upload',FilesystemIterator::CURRENT_AS_PATHNAME); ?>
+
+<?php $uploadedFiles = new DirectoryIterator('upload'); ?>
 <div class="row mt-5 mb-5">
+
 <?php foreach ($uploadedFiles as $uploadedFile) :?>
+    <?php if(!$uploadedFile->isDot()) :?>
     <div class="col-md-4">
         <div class="card">
-            <img class="card-img-top img-fuid" src="<?=$uploadedFile?>" alt="Card image cap">
+            <img class="card-img-top img-fuid" src="upload/<?=$uploadedFile->getFilename()?>" alt="Card image cap">
             <div class="card-body">
                 <form action="" method="post">
-                    <input type="hidden" name="delete">
+                    <input type="hidden" name="<?=$uploadedFile->key()?>">
                     <input class="btn btn-danger" type="submit" value="delete">
                 </form>
             </div>
         </div>
     </div>
-<?php endforeach; ?>
-<?php
-if(isset($_POST['delete'])) {
-    if (file_exists($uploadedFile)){
-        unlink($uploadedFile);
-        header('location: index.php');
-
+    <?php
+    if(isset($_POST[$uploadedFile->key()])) {
+        if (file_exists('upload/'.$uploadedFile->getFilename())){
+            unlink('upload/'.$uploadedFile->getFilename());
+            header('location: index.php');
+        }
     }
-}
-?>
+    ?>
+    <?php endif;  ?>
+<?php endforeach; ?>
+
+
 </div>
     </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
