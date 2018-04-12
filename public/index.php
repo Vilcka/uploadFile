@@ -1,8 +1,7 @@
 <?php
 require '../UploadController.php';
-
-
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -17,21 +16,13 @@ require '../UploadController.php';
 </head>
 <body>
     <div class="container">
-        <form class="form-controls" action="" method="post" enctype="multipart/form-data">
+        <h1 class="text-center mt-4 mb-4">Upload De fichier !!!</h1>
+        <form class="d-flex justify-content-center form-controls" action="" method="post" enctype="multipart/form-data">
                 <label  for="upload_file"></label>
                 <input  type="file" name="upload[]" multiple="multiple" id="upload_file"/>
-                <input class="btn btn-primary" type="submit" name="submit" value="Upload" />
+            <input class="btn btn-primary" type="submit" name="submit" value="Upload" />
         </form>
 
-
-<?php
-function dd($var)
-{
-    echo '<pre>';
-    var_dump($var);
-    echo '</pre>';
-}
-?>
 
 <?php
 // Si l'upload est lancé ..
@@ -40,7 +31,6 @@ if (isset($_POST['submit'])) {
     if (!empty($_FILES['upload']['name'])) {
         $uploadController = new UploadController();
         //init des variables
-        $uploaded = [];
         $filesName = $_FILES['upload']['name'];
         $filesType = $_FILES['upload']['type'];
         $filesSize = $_FILES['upload']['size'];
@@ -51,22 +41,52 @@ if (isset($_POST['submit'])) {
         for($i=0;$i<$numberFiles; $i ++) {
             //Si il ny'a pas d'erreur, que le fichier a la bonne extension et est de la bonne taille
             if($filesErrors[$i] !== 0) {
-                echo "<p class=\"text-danger\">Erreur lors de l'upload !</p>";
+                echo '<div class="alert alert-danger" role="alert">
+                        <p>Erreur lors de l\'upload !</p>
+                      </div>';
             }
             if(!$uploadController->checkExtension($filesType[$i], $filesName[$i])) {
-                echo "<p class=\"text-danger\">Le fichier $filesName[$i] n'est pas une image !</p>";
+                echo '<div class="alert alert-danger" role="alert">
+                        <p>Le fichier '. $filesName[$i] . ' n\'est pas une image !</p>
+                      </div>';
             }elseif(!$uploadController->checkSize($filesSize[$i])) {
-                echo "<p class=\"text-danger\">Le fichier $filesName[$i] est trop volumineux !</p>";
+                echo '<div class="alert alert-danger" role="alert">
+                        <p>Le fichier '. $filesName[$i] . ' est trop volumineux !</p> 
+                      </div>';
             }else {
-                $uploadFileName = '../Upload/'. $uploadController->uniqueFileName();
+                $uploadFileName = 'upload/'. $uploadController->uniqueFileName();
                 move_uploaded_file($filesTmp[$i],$uploadFileName);
             }
         }
     }
 }
+//margin 66+16
 ?>
+<?php $uploadedFiles = new FilesystemIterator('upload',FilesystemIterator::CURRENT_AS_PATHNAME); ?>
+<div class="row mt-5 mb-5">
+<?php foreach ($uploadedFiles as $uploadedFile) :?>
+    <div class="col-md-4">
+        <div class="card">
+            <img class="card-img-top img-fuid" src="<?=$uploadedFile?>" alt="Card image cap">
+            <div class="card-body">
+                <form action="" method="post">
+                    <input type="hidden" name="delete">
+                    <input class="btn btn-danger" type="submit" value="delete">
+                </form>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+<?php
+if(isset($_POST['delete'])) {
+    if (file_exists($uploadedFile)){
+        unlink($uploadedFile);
+        header('location: index.php');
 
-
+    }
+}
+?>
+</div>
     </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
