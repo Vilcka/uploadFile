@@ -13,9 +13,11 @@ class UploadController {
         'png' => 'image/png',
         'gif' => 'image/gif',
     ];
+
     private $extension = [];
+
     //tailel du fichier en octet, 1 Mo = 1048576 octets
-    private $sizeLimit = 5242880;
+    private $sizeLimit = 1048576;
 
 
     public function checkSize($size)
@@ -23,35 +25,28 @@ class UploadController {
         if($size > $this->sizeLimit) {
             return false;
         }
+        return true;
     }
 
     public function uniqueFileName()
     {
-
         $uniqueFileName = 'image' . uniqid() . '.' . $this->extension;
         return $uniqueFileName;
     }
 
-    private function getExtension(array $filesTmp)
+    public function getExtension(array $filesName)
     {
-        foreach ($filesTmp as $fileTmp) {
-            $this->extension = pathinfo($fileTmp, PATHINFO_EXTENSION);
+        foreach ($filesName as $fileName) {
+            $this->extension = pathinfo($fileName, PATHINFO_EXTENSION);
         }
         return $this->extension;
-
     }
 
-    public function checkExtension(array $fileType, array $fileTmp)
+    public function checkExtension(string $fileType, array $fileName)
     {
-        if (!in_array($fileType, $this->extensionAllowed) && array_key_exists($this->getExtension($fileTmp), $this->extensionAllowed)) {
-            echo "Le fichier n'est pas une image";
+        if (!array_key_exists($this->getExtension($fileName), $this->extensionAllowed) && !in_array($fileType, $this->extensionAllowed)) {
+            return false;
         }
-
         return true;
-    }
-
-    //FunctionCustom.php
-    static function dd($value){
-        die( var_dump( $value ) );
     }
 }
