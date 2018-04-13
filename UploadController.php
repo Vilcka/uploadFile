@@ -7,6 +7,9 @@
  */
 
 class UploadController {
+    /**
+     * @var array
+     */
     private $extensionAllowed = [
         'jpg' => 'image/jpg',
         'jpeg' => 'image/jpeg',
@@ -14,12 +17,22 @@ class UploadController {
         'gif' => 'image/gif',
     ];
 
+    /**
+     * @var array
+     */
     private $extension = [];
 
-    //tailel du fichier en octet, 1 Mo = 1048576 octets
+    //taille du fichier en octet, 1 Mo = 1048576 octets
+    /**
+     * @var int
+     */
     private $sizeLimit = 1048576;
 
 
+    /**
+     * @param $size
+     * @return bool
+     */
     public function checkSize($size)
     {
         if($size > $this->sizeLimit) {
@@ -28,12 +41,19 @@ class UploadController {
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function uniqueFileName()
     {
         $uniqueFileName = 'image' . uniqid() . '.' . $this->extension;
         return $uniqueFileName;
     }
 
+    /**
+     * @param string $fileName
+     * @return array|mixed
+     */
     public function getExtension(string $fileName)
     {
 
@@ -42,6 +62,11 @@ class UploadController {
         return $this->extension;
     }
 
+    /**
+     * @param string $fileType
+     * @param string $fileName
+     * @return bool
+     */
     public function checkExtension(string $fileType, string $fileName)
     {
         if (!array_key_exists($this->getExtension($fileName), $this->extensionAllowed) &&

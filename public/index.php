@@ -61,12 +61,10 @@ if (isset($_POST['submit'])) {
     }
 }
 
-//margin 66+16
 ?>
-
+<!-- DirectoryIterator est le parent de FilesystemIterator-->
 <?php $uploadedFiles = new DirectoryIterator('upload'); ?>
 <div class="row mt-5 mb-5">
-
 <?php foreach ($uploadedFiles as $uploadedFile) :?>
     <?php if(!$uploadedFile->isDot()) :?>
     <div class="col-md-4">
