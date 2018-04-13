@@ -60,32 +60,32 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+            if(isset($_POST['delete'])) {
+                if (file_exists('upload/'.$_POST['delete'])){
+                    unlink('upload/'.$_POST['delete']);
+                }
+                header('location: index.php');
+            }
 
 ?>
 <!-- DirectoryIterator est le parent de FilesystemIterator-->
 <?php $uploadedFiles = new DirectoryIterator('upload'); ?>
 <div class="row mt-5 mb-5">
 <?php foreach ($uploadedFiles as $uploadedFile) :?>
+
     <?php if(!$uploadedFile->isDot()) :?>
     <div class="col-md-4">
         <div class="card">
-            <img class="card-img-top img-fuid" src="upload/<?=$uploadedFile->getFilename()?>" alt="Card image cap">
+            <img class="card-img-top img-fluid" src="upload/<?=$uploadedFile->getFilename()?>" alt="Card image cap">
             <div class="card-body">
+                <p><?=$uploadedFile->getFilename()?></p>
                 <form action="" method="post">
-                    <input type="hidden" name="<?=$uploadedFile->key()?>">
+                    <input type="hidden" name="delete" value="<?=$uploadedFile->getFilename()?>">
                     <input class="btn btn-danger" type="submit" value="delete">
                 </form>
             </div>
         </div>
     </div>
-    <?php
-    if(isset($_POST[$uploadedFile->key()])) {
-        if (file_exists('upload/'.$uploadedFile->getFilename())){
-            unlink('upload/'.$uploadedFile->getFilename());
-            header('location: index.php');
-        }
-    }
-    ?>
     <?php endif;  ?>
 <?php endforeach; ?>
 
